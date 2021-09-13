@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "logAnalyticsWorkspaceName": {
+            "value": "eq-validation-law"
+        },
+        "solutions": {
+            "value": [
+                "Updates",
+                "AzureAutomation",
+                "ChangeTracking",
+                "ServiceMap",
+                "AlertManagement",
+                "AzureActivity"
+            ]
+        },
+        "automationAccountId": {
+            "value": "/subscriptions/d85805f8-3c37-46fc-9590-7bc9158c5f42/resourceGroups/eq-validation-rg/providers/Microsoft.Automation/automationAccounts/eq-validation-aa"
+        }
+    }
+}
