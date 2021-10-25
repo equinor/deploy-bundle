@@ -8,6 +8,7 @@ This module deploys an Azure Automation Account, with resource lock.
 | :--------------------------------------------------------------------- | :----------------- |
 | `Microsoft.Automation/automationAccounts`                              | 2015-10-31         |
 | `Microsoft.Automation/automationAccounts/runbooks`                     | 2018-06-30         |
+| `Microsoft.Automation/automationAccounts/modules`                      | 2015-10-31         |
 | `Microsoft.Automation/automationAccounts/providers/locks`              | 2016-09-01         |
 | `Microsoft.Automation/automationAccounts/schedules`                    | 2015-10-31         |
 | `Microsoft.Automation/automationAccounts/jobSchedules`                 | 2015-10-31         |
@@ -17,16 +18,18 @@ This module deploys an Azure Automation Account, with resource lock.
 | `Microsoft.Network/privateEndpoints`                                   | 2020-05-01         |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups`              | 2020-05-01         |
 
-
 ## Parameters
 
 | Parameter Name                  | Type   | Default Value                | Possible values               | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :------------------------------ | :----- | :--------------------------- | :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cuaId`                         | string |                              |                               | Optional. Customer Usage Attribution id (GUID). This GUID must be previously registered                                                                                                                                                                                                                                                                                                                         |
+| `managedIdentity`               | object | {}                           | Complex structure, see below. | Optional. Either enables a SystemAssigned managed identity, or you can provide a user assigned identity when this is supported.                                                                                                                                                                                                                                                                                 |
 | `automationAccountName`         | string |                              |                               | Required. Name of the Azure Automation Account                                                                                                                                                                                                                                                                                                                                                                  |
 | `location`                      | string | `[resourceGroup().location]` |                               | Optional. Location for all resources.                                                                                                                                                                                                                                                                                                                                                                           |
 | `skuName`                       | string | `Basic`                      | `Free`, `Basic`               | Optional. Specifies the SKU for the Automation Account                                                                                                                                                                                                                                                                                                                                                          |
 | `runbooks`                      | array  | []                           |                               | Optional. List of runbooks to be created in the automation account. Complex structure, see below.                                                                                                                                                                                                                                                                                                               |
+| `dependModules`                 | array  | []                           |                               | Optional. List of modules to be installed in to Automation Account before the dependant modules (Az.Accounts, e.g.). Complex structure, see below.                                                                                                                                                                                                                                                              |
+| `modules`                       | array  | []                           |                               | Optional. List of modules to be installed in to Automation Account. Complex structure, see below.                                                                                                                                                                                                                                                                                                               |
 | `schedules`                     | array  | []                           |                               | Optional. List of schedules to be created in the automation account. Complex structure, see below.                                                                                                                                                                                                                                                                                                              |
 | `jobSchedules`                  | array  | []                           |                               | Optional. List of jobSchedules to be created in the automation account. Complex structure, see below.                                                                                                                                                                                                                                                                                                           |
 | `baseTime`                      | string | [utcNow('u')]                |                               | Optional. Time used as a basis for e.g. the schedule start date                                                                                                                                                                                                                                                                                                                                                 |
@@ -83,11 +86,48 @@ List of runbooks to be created in the automation account
             "runbookType": "PowerShell", // Type of script
             "runbookScriptUri": "https://raw.githubusercontent.com/Azure/basicScale.ps1", // The uri where the runbook script is located
             "scriptStorageAccountId": "/subscriptions/62826c76-d304-46d8-a0f6-718dbdcc536c/resourceGroups/WVD-Mgmt-PO-RG/providers/Microsoft.Storage/storageAccounts/wvdassetsstore",
-            "version": "1.0.0.0" // version of api
+            "version": "1.0.0.0", // version of api
+            "description": "This runbook scales your resources." // Description of what this script does. Provide empty if no description necessary.
         }
     ]
 }
 ```
+
+### Parameter Usage: `dependModules`
+
+List of modules to be imported in to Automation Account before the dependant modules. Az.Compute, Az.Network, ++ are modules dependant on Az.Accounts. Therefore Az.Accounts should be imported before the other modules, or they will fail.
+
+```json
+"dependModules": {
+    "value": [
+        {
+            "moduleName": "Az.Accounts", // Name of the module, as found in PowerShell Gallery: https://www.powershellgallery.com/packages
+            "version": "2.5.3", // Version number of module. Will be added to package uri for download. Does not support 'latest', and import will fail if this is provided.
+            "uri": "https://devopsgallerystorage.blob.core.windows.net/packages" // Base uri for where module should be downloaded from. The example uri is the correct one for PowerShell Gallery.
+        }
+    ]
+}
+```
+
+This example results in the following uri: **[https://devopsgallerystorage.blob.core.windows.net/packages/az.accounts.2.5.3.nupkg](https://www.powershellgallery.com/packages?q=az.accounts*)**
+
+### Parameter Usage: `modules`
+
+List of modules to be imported in to Automation Account.
+
+```json
+"modules": {
+    "value": [
+        {
+            "moduleName": "Az.Resources", // Name of the module, as found in PowerShell Gallery: https://www.powershellgallery.com/packages
+            "version": "4.3.1", // Version number of module. Will be added to package uri for download. Does not support 'latest', and import will fail if this is provided.
+            "uri": "https://devopsgallerystorage.blob.core.windows.net/packages" // Base uri for where module should be downloaded from. The example uri is the correct one for PowerShell Gallery.
+        }
+    ]
+}
+```
+
+This example results in the following uri: **[https://devopsgallerystorage.blob.core.windows.net/packages/az.resources.4.3.1.nupkg](https://www.powershellgallery.com/packages?q=az.resources*)**
 
 ### Parameter Usage: `schedules`
 
@@ -130,9 +170,12 @@ List of jobSchedules to be created in the automation account
 ```
 
 ### Parameter Usage: `privateEndpoints`
+
 To use Private Endpoint the following dependencies must be deployed:
+
 - Destination subnet must be created with the following configuration option - `"privateEndpointNetworkPolicies": "Disabled"`.  Setting this option acknowledges that NSG rules are not applied to Private Endpoints (this capability is coming soon). A full example is available in the Virtual Network Module.
 - Although not strictly required, it is highly recommened to first create a private DNS Zone to host Private Endpoint DNS records. See [Azure Private Endpoint DNS configuration](https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-dns) for more information.
+
 ```json
 "privateEndpoints": {
     "value": [
@@ -268,6 +311,34 @@ Tag names and tag values can be provided as needed. A tag can be left without a 
 }
 ```
 
+### Parameter Usage: `managedIdentity`
+
+Automation Accounts can have managed identities assigned. The best practice dictates using a SystemAssigned managed identity instead of a RunAsAccount.
+More information [here](https://docs.microsoft.com/en-us/azure/templates/microsoft.automation/automationaccounts?tabs=json#identity).
+
+System Assigned:
+
+```json
+"managedIdentity": {
+    "value": {
+        "type": "SystemAssigned"
+    }
+}
+```
+
+User Assigned:
+
+```json
+"identity": {
+    "value": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+            "<managed identity 1 resource id>"
+        }
+    }
+}
+```
+
 ## Outputs
 
 | Output Name                      | Type   | Description                                                |
@@ -277,6 +348,7 @@ Tag names and tag values can be provided as needed. A tag can be left without a 
 | `automationAccountResourceId`    | string | The Resource Id of the Automation Account.                 |
 | `dummyObject`                    | array  | The Name of the Automation Account.                        |
 | `dummyString`                    | array  | The Name of the Automation Account.                        |
+| `managedIdentity`                | object | Managed Identity Object Id and Tenant Id, if present       |
 
 ## Considerations
 
