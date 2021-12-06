@@ -6,9 +6,7 @@ on:
     paths:
       - action.yml
       - .github/workflows/Action-Test.yml
-      - Modules/**
       - Scripts/**
-      - Tests/**
 
 env:
   VariableFilePath: global.variables.json
@@ -18,17 +16,16 @@ env:
   AppSecret: ${{ secrets.APP_SECRET }}
   ModulesPath: Modules
   ModuleName: ResourceGroup
-  ModuleVersion: '1.0'
+  ModuleVersion: "1.0"
 
 jobs:
   Validate:
     strategy:
       max-parallel: 1 # Avoid collision as parameters will be same
       matrix:
-        os: [ubuntu-latest,windows-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-
       - name: Checkout parameters
         uses: actions/checkout@v2
 

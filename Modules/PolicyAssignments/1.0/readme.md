@@ -19,7 +19,6 @@
 | `identity`             | string | Optional. The managed identity associated with the policy assignment.                        |              |                 |
 | `cuaId`                | string | Optional. Customer Usage Attribution ID (GUID). This GUID must be previously registered      |              |                 |
 
-
 ## Outputs
 
 | Output Name            | Type   | Description                                                   |
