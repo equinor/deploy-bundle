@@ -134,6 +134,9 @@ foreach ($ParameterFile in $ParameterFiles) {
         { $_ -in '.json', '.bicep' } {
             Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - ARM ($_) module"
             switch ($Action) {
+                'WhatIf' {
+                    $Operation = 'what-if'
+                }
                 'Validate' {
                     $Operation = 'validate'
                 }
@@ -147,13 +150,6 @@ foreach ($ParameterFile in $ParameterFiles) {
                     throw "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Action not supported"
                 }
             }
-
-            # Dont really need to double check the JSON in this case i think
-            #Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file"
-            #if (! (Test-JSONParameters -ParameterFilePath $ParameterFile.FullName)) {
-            #    throw "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file - Failed"
-            #}
-            #Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file - Successfull"
 
             $Schema = (Get-Content -Raw -Path $ParameterFile | ConvertFrom-Json).'$schema'
             if ($Schema -notmatch '\/deploymentParameters.json#$') {
@@ -212,7 +208,11 @@ foreach ($ParameterFile in $ParameterFiles) {
                 $Parameters += " $ParameterOverrides"
             }
 
-            $cmd = "az deployment $Scope $Operation $Target $DeploymentNameParameter $Template $LocationParam $Parameters --output json | ConvertFrom-Json"
+            if ($Action -eq 'WhatIf') {
+                $cmd = "az deployment $Scope $Operation $Target $DeploymentNameParameter $Template $LocationParam $Parameters --exclude-change-types Ignore"
+            } else {
+                $cmd = "az deployment $Scope $Operation $Target $DeploymentNameParameter $Template $LocationParam $Parameters --output json | ConvertFrom-Json"
+            }
 
             Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - using:"
             $cmd
@@ -224,13 +224,13 @@ foreach ($ParameterFile in $ParameterFiles) {
                 try {
                     $DeploymentOutput = Invoke-Expression -Command $cmd -ErrorAction Stop
                 } catch {
-                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failiure cought"
+                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure caught"
                     $Failed = $true
                 }
                 $DeploymentExecutionStatus = $LASTEXITCODE
 
                 if ($Failed -or ($DeploymentExecutionStatus -ne 0)) {
-                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failiure."
+                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure."
                     Write-Warning "    Command execution status: $DeploymentExecutionStatus"
                     Write-Output '    Retreiving deployment information.'
                     $DeploymentResult = Invoke-Expression -Command "az deployment $Scope list $Target --output json" | ConvertFrom-Json | Where-Object name -EQ $DeploymentName
@@ -254,31 +254,35 @@ foreach ($ParameterFile in $ParameterFiles) {
                 break
             }
 
-            Write-Output '    Showing DeploymentOutput:'
-            $DeploymentOutput | Select-Object -ExcludeProperty properties
-            Write-Output '    Showing DeploymentOutput.properties:'
-            $DeploymentOutput | Select-Object -ExpandProperty properties
-            Write-Output '    Showing DeploymentOutput.properties.parameters:'
-            $DeploymentOutput.properties | Select-Object -ExpandProperty parameters
-
-            $DeploymentOutputObject = New-Object -TypeName PSCustomObject
-            foreach ($Output in $DeploymentOutput.properties.outputs.PSObject.Properties) {
-                $Name = $Output.Name
-                $Value = $Output.Value.Value
-                $DeploymentOutputObject | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
-            }
-            $DeploymentOutputObjects += $DeploymentOutputObject
-
-            <#
-            $RemoveFilePath = "$ModuleFolder/Scripts/Remove-Module.ps1"
-            if (Test-Path -Path $RemoveFilePath) {
-                $RemoveFilePath
+            if ($Action -eq 'WhatIf') {
+                Write-Output '    Showing WhatIfOutput:'
+                $DeploymentOutput
+                "## $DeploymentName" | Out-File -Path /tmp/OUTPUT.md -Append
+                '```' | Out-File -Path /tmp/OUTPUT.md -Append
+                $DeploymentOutput | Out-File -Path /tmp/OUTPUT.md -Append
+                '```' | Out-File -Path /tmp/OUTPUT.md -Append
+                Write-Output "::set-output name=Output::$DeploymentOutput"
             } else {
-                'Remove based on tags'
-            }#>
+                Write-Output '    Showing DeploymentOutput:'
+                $DeploymentOutput | Select-Object -ExcludeProperty properties
+                Write-Output '    Showing DeploymentOutput.properties:'
+                $DeploymentOutput | Select-Object -ExpandProperty properties
+                Write-Output '    Showing DeploymentOutput.properties.parameters:'
+                $DeploymentOutput.properties | Select-Object -ExpandProperty parameters
+
+                $DeploymentOutputObject = New-Object -TypeName PSCustomObject
+                foreach ($Output in $DeploymentOutput.properties.outputs.PSObject.Properties) {
+                    $Name = $Output.Name
+                    $Value = $Output.Value.Value
+                    $DeploymentOutputObject | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
+                }
+                $DeploymentOutputObjects += $DeploymentOutputObject
+                Write-Output "::set-output name=Output::$($DeploymentOutputObjects | ConvertTo-Json -Compress -Depth 100)"
+            }
+
         }
         '.yml' {
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Ansiable module"
+            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Ansible module"
         }
         '.tf' {
             Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Terraform module"
@@ -291,8 +295,6 @@ foreach ($ParameterFile in $ParameterFiles) {
 }
 
 Write-Output '::endgroup::'
-
-Write-Output "::set-output name=Output::$($DeploymentOutputObjects | ConvertTo-Json -Compress -Depth 100)"
 
 New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion-Output"
 return $DeploymentOutputObjects

@@ -8,7 +8,7 @@
 
 This action automates the validation, deployment and removal of resources in Azure using [idempotent](https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning)
 [Infrastructure as Code (IaC)](https://en.wikipedia.org/wiki/Infrastructure_as_code) modules.
-You can use the built-in module library that comes with this action or create and use your own module repo.
+You can use the built-in module library that comes with this action or create and use your own module repository.
 
 Supported IaC languages:
 
@@ -47,8 +47,8 @@ These contributions would not make sense to contribute to [azure/arm-deploy](htt
 
 ## Module library
 
-By default the AzModules action uses the built in module repository. This can be overridden by using the `ModulesPath` input.
-The folder this is pointing to should be structured like the [`Modules`](https://github.com/equinor/AzModules/tree/main/Modules) folder in this repo.
+By default the AzModules action uses the built-in module repository. This can be overridden by using the `ModulesPath` input.
+The folder this is pointing to should be structured like the [`Modules`](https://github.com/equinor/AzModules/tree/main/Modules) folder in this repository.
 
 | Module name (link to readme)                                                                                                 | IaC Language | Status                                                                                                                                                                                                                                       |
 | :--------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -66,11 +66,25 @@ The folder this is pointing to should be structured like the [`Modules`](https:/
 
 This process is currently being established.
 
+### ARM/Bicep WhatIf deployment
+
+When doing ARM/Bicep you can use [WhatIf deployments](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-what-if?tabs=azure-cli) to see which changes will be performed by you operation. This is also possible with our framework.
+
+See usage example [here](#using-whatif).
+
+When a deployment with action `WhatIf` is processed, you will get an output message with the required changes to your infrastructure. You can then decide if this is should be deployed, or if you want to change the code for any reason.
+
+What-If will always run on a Pull Request to main branch.
+
+### PowerShell WhatIf
+
+An action value of `what-if` will be input as a parameter to the PowerShell script. PowerShell scripts to be deployed need to support this action value, and implement their own version of What-If.
+
 ## Inputs
 
 | Input name            | Default  | Required | Description                                                                                                            | Allowed values                                                                                                                        |
 | :-------------------- | :------- | :------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `Action`              | `Deploy` | No       | The action to perform.                                                                                                 | Validate, Deploy, Remove                                                                                                              |
+| `Action`              | `Deploy` | No       | The action to perform.                                                                                                 | WhatIf, Validate, Deploy, Remove                                                                                                      |
 | `ResourceGroupName`   |          | No       | Target Resource Group to deploy resources to.                                                                          | string                                                                                                                                |
 | `Subscription`        |          | No       | Subscription ID or name to deploy resources to.                                                                        | string (GUID or name of subscription)                                                                                                 |
 | `ManagementGroupID`   |          | No       | Target Management Group to deploy resources to.                                                                        | string                                                                                                                                |
@@ -109,7 +123,7 @@ N/A
 
 ## Usage
 
-### Using the built in modules
+### Using the built-in modules
 
 ```yml
 name: Test-Workflow
@@ -191,6 +205,43 @@ jobs:
           # ResourceGroupName can be passed from environment variables using ParametersOverrides.
           ParameterOverrides: resourceGroupName=${{ env.ResourceGroupName }}
 
+```
+
+### Using WhatIf
+
+You can use WhatIf deployment to check which changes will be deployed.
+
+```yml
+name: Test-Workflow
+
+on: [push]
+
+env:
+  TenantID: 0229e31e-273f-49bc-befe-eb255ae83dfc
+  AppID: a3825ed9-ca00-4355-9b3e-a37f12f9cf44
+  Subscription: Dev-Subscription-123
+  AppSecret: ${{ secrets.APP_SECRET }}
+  Location: norwayeast
+
+jobs:
+  Validate:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout parameter
+        uses: actions/checkout@v2
+
+      - name: Connect to Azure
+        uses: equinor/AzConnect@v1
+
+      - name: Deploy resource group
+        id: DeployRG
+        uses: equinor/AzModules@v1
+        with:
+          ModuleName: ResourceGroup
+          ModuleVersion: '1.0'
+          Action: 'WhatIf'
+          ParameterFilePath: Parameters/ResourceGroup/MyRg.json
 ```
 
 ### How to handle output

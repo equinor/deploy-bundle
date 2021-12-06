@@ -4,7 +4,7 @@ This module deploys an Action Group
 
 ## Resource Types
 
-| Resource Type                                               | Api Version        |
+| Resource Type                                               | API Version        |
 | :---------------------------------------------------------- | :----------------- |
 | `Microsoft.Resources/deployments`                           | 2018-02-01         |
 | `microsoft.insights/actionGroups`                           | 2019-06-01         |
@@ -29,7 +29,7 @@ This module deploys an Action Group
 | `azureFunctionReceivers`     | array  | []            | Array of complex structures, see below. | Optional. The list of Azure Function receivers that are part of this action group.                                                                                                                                                                                                                                                                                                                              |
 | `armRoleReceivers`           | array  | []            | Array of complex structures, see below. | Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported.                                                                                                                                                                                                                                                                  |
 | `tags`                       | object | {}            | Complex structure, see below.           | Optional. Tags of the Action Group resource.                                                                                                                                                                                                                                                                                                                                                                    |
-| `cuaId`                      | string | {}            | Complex structure, see below.           | Optional. Customer Usage Attribution id (GUID). This GUID must be previously registered.                                                                                                                                                                                                                                                                                                                        |
+| `cuaId`                      | string | {}            | Complex structure, see below.           | Optional. Customer Usage Attribution ID (GUID). This GUID must be previously registered.                                                                                                                                                                                                                                                                                                                        |
 | `location`                   | string | global        | Complex structure, see below.           | Optional. Location for all resources.                                                                                                                                                                                                                                                                                                                                                                           |
 
 ### Parameter Usage: receivers
@@ -127,7 +127,7 @@ Tag names and tag values can be provided as needed. A tag can be left without a 
 | Output Name               | Type   | Description                                                     |
 | :------------------------ | :----- | :-------------------------------------------------------------- |
 | `actionGroupName`         | string | The Name of the Azure Action Group.                             |
-| `actionGroupResourceId`   | string | The Resource Ids of the Action Group deployed.                  |
+| `actionGroupResourceId`   | string | The Resource IDs of the Action Group deployed.                  |
 | `deploymentResourceGroup` | string | The name of the Resource Group the Action Group was created in. |
 
 ## Considerations

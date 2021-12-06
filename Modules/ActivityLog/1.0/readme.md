@@ -4,7 +4,7 @@ This module deploys a subscription wide export of the ActivityLog.
 
 ## Resource Types
 
-| Resource Type                           | Api Version        |
+| Resource Type                           | API Version        |
 | :-------------------------------------- | :----------------- |
 | `Microsoft.Insights/diagnosticSettings` | 2017-05-01-preview |
 
@@ -24,7 +24,7 @@ This module deploys a subscription wide export of the ActivityLog.
 
 | Output Name            | Type   | Description                          |
 | :--------------------- | :----- | :----------------------------------- |
-| `diagnosticResourceId` | string | The Resource Ids of the Diagnostics. |
+| `diagnosticResourceId` | string | The Resource IDs of the Diagnostics. |
 | `diagnosticsName`      | string | The Name of the Diagnostics.         |
 
 ## Considerations

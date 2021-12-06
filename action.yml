@@ -6,7 +6,7 @@ branding:
 
 inputs:
   Action:
-    description: 'The action to perform. Validate, Deploy, Remove. Default: Deploy'
+    description: 'The action to perform. Whatif, Validate, Deploy, Remove. Default: Deploy'
     required: false
     default: Deploy
   ResourceGroupName:
@@ -50,11 +50,11 @@ inputs:
 
 outputs:
   Output:
-    description: "Output from the action, as a compressed json data structure."
+    description: 'Output from the action, as a compressed json data structure.'
     value: ${{ steps.AzModules.outputs.Output }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Download AzUtilities
       shell: pwsh

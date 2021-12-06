@@ -4,7 +4,7 @@ This module deploys Resource Groups.
 
 ## Resource types
 
-| Resource Type                             | ApiVersion         |
+| Resource Type                             | API Version        |
 | :---------------------------------------- | :----------------- |
 | `Microsoft.Resources/resourceGroups`      | 2018-05-01         |
 | `Microsoft.Resources/deployments`         | 2018-05-01         |

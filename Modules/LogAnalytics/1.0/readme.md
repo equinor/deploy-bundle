@@ -4,7 +4,7 @@ This template deploys Log Analytics.
 
 ## Resource types
 
-| ResourceType                                                         | ApiVersion         |
+| Resource Type                                                        | API Version        |
 | :------------------------------------------------------------------- | :----------------- |
 | `Microsoft.Resources/deployments`                                    | 2018-02-01         |
 | `Microsoft.OperationalInsights/workspaces`                           | 2017-03-15-preview |
@@ -23,7 +23,7 @@ This template deploys Log Analytics.
 | :------------------------------------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------- | :-------------------------------------------- |
 | `activityLogAdditionalSubscriptionIDs` | array  | Optional. List of additional Subscription IDs to collect Activity logs from. The subscription holding the Log Analytics workspace is added by default. The user/SPN/managed identity has to have reader access on the subscription you'd like to collect Activity logs from.                                                                                                                                   | System.Object[]            |                                               |
 | `automationAccountId`                  | string | Optional. Automation Account resource identifier, value used to create a LinkedService between Log Analytics and an Automation Account.                                                                                                                                                                                                                                                                        |                            |                                               |
-| `cuaId`                                | string | Optional. Customer Usage Attribution id (GUID). This GUID must be previously registered                                                                                                                                                                                                                                                                                                                        |                            |                                               |
+| `cuaId`                                | string | Optional. Customer Usage Attribution ID (GUID). This GUID must be previously registered                                                                                                                                                                                                                                                                                                                        |                            |                                               |
 | `dataRetention`                        | int    | Required. Number of days data will be retained for                                                                                                                                                                                                                                                                                                                                                             | 365                        |                                               |
 | `diagnosticStorageAccountId`           | string | Optional. Log Analytics workspace resource identifier                                                                                                                                                                                                                                                                                                                                                          |                            |                                               |
 | `location`                             | string | Optional. Location for all resources.                                                                                                                                                                                                                                                                                                                                                                          | [resourceGroup().location] |                                               |
@@ -120,10 +120,10 @@ Tag names and tag values can be provided as needed. A tag can be left without a 
 | Output Name                          | Type         | Description                                              |
 | :----------------------------------- | :----------- | :------------------------------------------------------- |
 | `logAnalyticsPrimarySharedKey`       | securestring | The Primary Shared Key for Log Analytics.                |
-| `logAnalyticsWorkspaceId`            | string       | The Workspace Id for Log Analytics.                      |
+| `logAnalyticsWorkspaceId`            | string       | The Workspace ID for Log Analytics.                      |
 | `logAnalyticsWorkspaceName`          | string       | The Name of the Log Analytics workspace deployed.        |
 | `logAnalyticsWorkspaceResourceGroup` | string       | The Resource Group log analytics was deployed to.        |
-| `logAnalyticsWorkspaceResourceId`    | string       | The Resource Id of the Log Analytics workspace deployed. |
+| `logAnalyticsWorkspaceResourceId`    | string       | The Resource ID of the Log Analytics workspace deployed. |
 
 ## Considerations
 
