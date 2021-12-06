@@ -4,10 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - action.yml
-      - .github/workflows/Module-MetricAlert-1.0.yml
-      - Modules/MetricAlert/1.0/**
-      - Scripts/**
+      - '.github/workflows/Module-MetricAlert.yml'
+      - 'Modules/MetricAlert/1.0/**'
+      - '!*/**/readme.md'
 
 env:
   VariableFilePath: global.variables.json
@@ -21,11 +20,7 @@ env:
 
 jobs:
   Validate:
-    strategy:
-      max-parallel: 1 # Avoid collision as parameters will be same
-      matrix:
-        os: [ubuntu-latest,windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: 'ubuntu-latest'
     steps:
 
       - name: Checkout source code

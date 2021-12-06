@@ -6,20 +6,10 @@
       "value": ""
     },
     "policyAssignmentName": {
-      "value": "Add a tag to resources"
+      "value": "Key vaults should have purge protection enabled"
     },
     "policyDefinitionID": {
-      "value": "/providers/Microsoft.Authorization/policyDefinitions/4f9dc7db-30c1-420c-b61a-e1d640128d26"
-    },
-    "parameters": {
-      "value": {
-        "tagName": {
-          "value": "Tag"
-        },
-        "tagValue": {
-          "value": "Value"
-        }
-      }
+      "value": "/providers/Microsoft.Authorization/policyDefinitions/0b60c0b2-2dc2-4e1c-b5c9-abbed971de53"
     },
     "location": {
       "value": "westeurope"
