@@ -1,5 +1,10 @@
 # Deploy bundles - Deploy resources to Azure
 
+> Do not use. Currently under development.
+
+> copied from https://github.com/equinor/AzModules
+
+
 [![Action-Test](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml)
 
 [![Linter](https://github.com/equinor/deploy-bundle/workflows/Linter/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Linter.yml)
