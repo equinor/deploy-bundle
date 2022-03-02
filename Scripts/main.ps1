@@ -219,13 +219,14 @@ foreach ($ParameterFile in $ParameterFiles) {
 
             for ($Retry = 1; $Retry -le $Retries; $Retry++) {
                 New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries"
-
+                $errorFromDeployment = $null
                 $Failed = $false
                 try {
                     $DeploymentOutput = Invoke-Expression -Command $cmd -ErrorAction Stop
                 } catch {
                     Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure caught"
                     $Failed = $true
+                    $errorFromDeployment = $_
                 }
                 $DeploymentExecutionStatus = $LASTEXITCODE
 
@@ -244,7 +245,7 @@ foreach ($ParameterFile in $ParameterFiles) {
                     $DeploymentResult.properties.error | Select-Object -ExpandProperty details
 
                     if ($Retry -eq $Retries) {
-                        throw $_
+                        throw $errorFromDeployment
                     }
 
                     Write-Output "    Retrying in $RetryInterval seconds."
