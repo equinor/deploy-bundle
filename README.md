@@ -1,10 +1,10 @@
-# AzModules - Deploy resources to Azure
+# Deploy bundles - Deploy resources to Azure
 
-[![Action-Test](https://github.com/equinor/AzModules/actions/workflows/Action-Test.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Action-Test.yml)
+[![Action-Test](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml)
 
-[![Linter](https://github.com/equinor/AzModules/workflows/Linter/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Linter.yml)
+[![Linter](https://github.com/equinor/deploy-bundle/workflows/Linter/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Linter.yml)
 
-[![GitHub](https://img.shields.io/github/license/equinor/AzModules)](LICENSE)
+[![GitHub](https://img.shields.io/github/license/equinor/deploy-bundle)](LICENSE)
 
 This action automates the validation, deployment and removal of resources in Azure using [idempotent](https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning)
 [Infrastructure as Code (IaC)](https://en.wikipedia.org/wiki/Infrastructure_as_code) modules.
@@ -47,20 +47,20 @@ These contributions would not make sense to contribute to [azure/arm-deploy](htt
 
 ## Module library
 
-By default the AzModules action uses the built-in module repository. This can be overridden by using the `ModulesPath` input.
-The folder this is pointing to should be structured like the [`Modules`](https://github.com/equinor/AzModules/tree/main/Modules) folder in this repository.
+By default the deploy-bundle action uses the built-in module repository. This can be overridden by using the `ModulesPath` input.
+The folder this is pointing to should be structured like the [`Modules`](https://github.com/equinor/deploy-bundle/tree/main/Modules) folder in this repository.
 
-| Module name (link to readme)                                                                                                 | IaC Language | Status                                                                                                                                                                                                                                       |
-| :--------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ActionGroup](https://github.com/equinor/AzModules/tree/main/Modules/ActionGroup/1.0#readme)                                 | ARM          | [![ActionGroup 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-ActionGroup.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-ActionGroup.yml)                                                 |
-| [ActivityLog](https://github.com/equinor/AzModules/tree/main/Modules/ActivityLog/1.0#readme)                                 | ARM          | [![ActivityLog 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-ActivityLog.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-ActivityLog.yml)                                                 |
-| [ActivityLogAlert](https://github.com/equinor/AzModules/tree/main/Modules/ActivityLogAlert/1.0#readme)                       | ARM          | [![ActivityLogAlert 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-ActivityLogAlert.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-ActivityLogAlert.yml)                                  |
-| [AutomationAccount](https://github.com/equinor/AzModules/tree/main/Modules/AutomationAccount/1.0#readme)                     | ARM          | [![AutomationAccount 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-AutomationAccount.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-AutomationAccount.yml)                               |
-| [Budgets](https://github.com/equinor/AzModules/tree/main/Modules/Budgets/1.0#readme)                                         | ARM          | [![Budgets 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-Budgets.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-Budgets.yml)                                                             |
-| [LogAnalytics](https://github.com/equinor/AzModules/tree/main/Modules/LogAnalytics/1.0#readme)                               | ARM          | [![LogAnalytics 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-LogAnalytics.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-LogAnalytics.yml)                                              |
-| [MetricAlert](https://github.com/equinor/AzModules/tree/main/Modules/MetricAlert/1.0#readme)                                 | ARM          | [![MetricAlert 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-MetricAlert.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-MetricAlert.yml)                                                 |
-| [ResourceGroup](https://github.com/equinor/AzModules/tree/main/Modules/ResourceGroup/1.0#readme)                             | ARM          | [![ResourceGroup 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-ResourceGroup.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-ResourceGroup.yml)                                           |
-| [SoftwareUpdateConfiguration](https://github.com/equinor/AzModules/tree/main/Modules/SoftwareUpdateConfiguration/1.0#readme) | ARM          | [![SoftwareUpdateConfiguration 1.0](https://github.com/equinor/AzModules/actions/workflows/Module-SoftwareUpdateConfiguration.yml/badge.svg)](https://github.com/equinor/AzModules/actions/workflows/Module-SoftwareUpdateConfiguration.yml) |
+| Module name (link to readme)                                                                                                     | IaC Language | Status                                                                                                                                                                                                                                               |
+| :------------------------------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ActionGroup](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActionGroup/1.0#readme)                                 | ARM          | [![ActionGroup 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActionGroup.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActionGroup.yml)                                                 |
+| [ActivityLog](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActivityLog/1.0#readme)                                 | ARM          | [![ActivityLog 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLog.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLog.yml)                                                 |
+| [ActivityLogAlert](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActivityLogAlert/1.0#readme)                       | ARM          | [![ActivityLogAlert 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLogAlert.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLogAlert.yml)                                  |
+| [AutomationAccount](https://github.com/equinor/deploy-bundle/tree/main/Modules/AutomationAccount/1.0#readme)                     | ARM          | [![AutomationAccount 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-AutomationAccount.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-AutomationAccount.yml)                               |
+| [Budgets](https://github.com/equinor/deploy-bundle/tree/main/Modules/Budgets/1.0#readme)                                         | ARM          | [![Budgets 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-Budgets.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-Budgets.yml)                                                             |
+| [LogAnalytics](https://github.com/equinor/deploy-bundle/tree/main/Modules/LogAnalytics/1.0#readme)                               | ARM          | [![LogAnalytics 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-LogAnalytics.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-LogAnalytics.yml)                                              |
+| [MetricAlert](https://github.com/equinor/deploy-bundle/tree/main/Modules/MetricAlert/1.0#readme)                                 | ARM          | [![MetricAlert 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-MetricAlert.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-MetricAlert.yml)                                                 |
+| [ResourceGroup](https://github.com/equinor/deploy-bundle/tree/main/Modules/ResourceGroup/1.0#readme)                             | ARM          | [![ResourceGroup 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ResourceGroup.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ResourceGroup.yml)                                           |
+| [SoftwareUpdateConfiguration](https://github.com/equinor/deploy-bundle/tree/main/Modules/SoftwareUpdateConfiguration/1.0#readme) | ARM          | [![SoftwareUpdateConfiguration 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-SoftwareUpdateConfiguration.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-SoftwareUpdateConfiguration.yml) |
 
 ### Test and validation process for modules
 
@@ -89,7 +89,7 @@ An action value of `what-if` will be input as a parameter to the PowerShell scri
 | `Subscription`        |          | No       | Subscription ID or name to deploy resources to.                                                                        | string (GUID or name of subscription)                                                                                                 |
 | `ManagementGroupID`   |          | No       | Target Management Group to deploy resources to.                                                                        | string                                                                                                                                |
 | `Location`            |          | No       | Azure location for where to deploy resources.                                                                          | string (valid Azure location)                                                                                                         |
-| `ModulesFolderPath`   |          | No       | Path to a custom module library, structured as /\<ModuleName\>/\<ModuleVersion\>/deploy.*.                             | string                                                                                                                                |
+| `ModulesFolderPath`   |          | No       | Path to a custom module library, structured as /\<ModuleName\>/\<ModuleVersion\>/deploy.\*.                            | string                                                                                                                                |
 | `ModuleName`          |          | No       | Name and version of module.                                                                                            | string                                                                                                                                |
 | `ModuleVersion`       |          | No       | Version of module.                                                                                                     | string ([simver](https://simver.org/))                                                                                                |
 | `ParameterFilePath`   |          | No       | Path to Parameter file. Will deploy based on single parameter file. Need to use either this or ParametersFolderPath.   | Relative or absolute path to a variables json file.                                                                                   |
@@ -141,7 +141,6 @@ jobs:
   Validate:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout parameter
         uses: actions/checkout@v2
 
@@ -150,10 +149,10 @@ jobs:
 
       - name: Deploy resource group
         id: DeployRG
-        uses: equinor/AzModules@v1
+        uses: equinor/deploy-bundle@v1
         with:
           ModuleName: ResourceGroup
-          ModuleVersion: '1.0'
+          ModuleVersion: "1.0"
           ParameterFilePath: Parameters/ResourceGroup/MyRg.json
 ```
 
@@ -171,15 +170,14 @@ env:
   AppID: a3825ed9-ca00-4355-9b3e-a37f12f9cf44
   Subscription: Dev-Subscription-123
   AppSecret: ${{ secrets.APP_SECRET }}
-  ModulesPath: './MyOwnModules' ## Required folder structure ./<ModuleName>/ModuleVersion/deploy.*
+  ModulesPath: "./MyOwnModules" ## Required folder structure ./<ModuleName>/ModuleVersion/deploy.*
   Location: norwayeast
-  ResourceGroupName: 'MyOwnResources-RG'
+  ResourceGroupName: "MyOwnResources-RG"
 
 jobs:
   Validate:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout parameters
         uses: actions/checkout@v2
 
@@ -195,16 +193,15 @@ jobs:
 
       - name: Deploy resource
         id: Deploy
-        uses: equinor/AzModules@v1
+        uses: equinor/deploy-bundle@v1
         with:
           ModuleName: ResourceGroup
-          ModuleVersion: '1.0'
+          ModuleVersion: "1.0"
           #ModulesPath: ${{ env.ModulesPath}} # Will get env var with same name by default.
           # Assume param file does not contain ResourceGroupName parameter
           ParameterFilePath: Parameters/ResourceGroup/MyOwnResources-RG.json
           # ResourceGroupName can be passed from environment variables using ParametersOverrides.
           ParameterOverrides: resourceGroupName=${{ env.ResourceGroupName }}
-
 ```
 
 ### Using WhatIf
@@ -227,7 +224,6 @@ jobs:
   Validate:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout parameter
         uses: actions/checkout@v2
 
@@ -236,11 +232,11 @@ jobs:
 
       - name: Deploy resource group
         id: DeployRG
-        uses: equinor/AzModules@v1
+        uses: equinor/deploy-bundle@v1
         with:
           ModuleName: ResourceGroup
-          ModuleVersion: '1.0'
-          Action: 'WhatIf'
+          ModuleVersion: "1.0"
+          Action: "WhatIf"
           ParameterFilePath: Parameters/ResourceGroup/MyRg.json
 ```
 
@@ -259,13 +255,12 @@ env:
   Subscription: Dev-Subscription-123
   AppSecret: ${{ secrets.APP_SECRET }}
   Location: norwayeast
-  ResourceGroupName: 'MyOwnResources-RG'
+  ResourceGroupName: "MyOwnResources-RG"
 
 jobs:
   Validate:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout parameters
         uses: actions/checkout@v2
 
@@ -274,10 +269,10 @@ jobs:
 
       - name: Deploy resource group
         id: DeployRG
-        uses: equinor/AzModules@v1
+        uses: equinor/deploy-bundle@v1
         with:
           ModuleName: ResourceGroup
-          ModuleVersion: '1.0'
+          ModuleVersion: "1.0"
           # Assume param file does not contain the required 'ResourceGroupName' parameter
           ParameterFilePath: Parameters/ResourceGroup/MyOwnResources-RG.json
           # 'ResourceGroupName' can be passed from environment variables as an override.
@@ -285,14 +280,13 @@ jobs:
 
       - name: Deploy ActionGroup
         id: DeployAG
-        uses: equinor/AzModules@v1
+        uses: equinor/deploy-bundle@v1
         with:
           ModuleName: ActionGroup
-          ModuleVersion: '1.0'
+          ModuleVersion: "1.0"
           # Outputs from a deployment can be used as an input in another deployment.
-          ResourceGroupName: '${{ fromJSON(steps.DeployRG.outputs.Output).resourceGroupName }}'
+          ResourceGroupName: "${{ fromJSON(steps.DeployRG.outputs.Output).resourceGroupName }}"
           ParameterFilePath: Parameters/ActionGroup/MyActionGroup.json
-
 ```
 
 ## Dependencies
