@@ -5,10 +5,6 @@
 > copied from https://github.com/equinor/AzModules
 
 
-[![Action-Test](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Action-Test.yml)
-
-[![Linter](https://github.com/equinor/deploy-bundle/workflows/Linter/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Linter.yml)
-
 [![GitHub](https://img.shields.io/github/license/equinor/deploy-bundle)](LICENSE)
 
 This action automates the validation, deployment and removal of resources in Azure using [idempotent](https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning)
@@ -46,26 +42,9 @@ However, there are some reasons why we chose to create this action:
   See [Input handling in AzActions](https://github.com/equinor/AzActions#input-handling) for details.
 - Meant as a unified deployment framework supporting multiple the language used in the module/template to Azure.
 - Supports more than the deployment action. This action can also be used to validate and remove deployments.
-- Contains a library of modules and templates that are used by default.
 
 These contributions would not make sense to contribute to [azure/arm-deploy](https://github.com/azure/login) as it will support more than ARM.
 
-## Module library
-
-By default the deploy-bundle action uses the built-in module repository. This can be overridden by using the `ModulesPath` input.
-The folder this is pointing to should be structured like the [`Modules`](https://github.com/equinor/deploy-bundle/tree/main/Modules) folder in this repository.
-
-| Module name (link to readme)                                                                                                     | IaC Language | Status                                                                                                                                                                                                                                               |
-| :------------------------------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ActionGroup](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActionGroup/1.0#readme)                                 | ARM          | [![ActionGroup 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActionGroup.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActionGroup.yml)                                                 |
-| [ActivityLog](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActivityLog/1.0#readme)                                 | ARM          | [![ActivityLog 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLog.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLog.yml)                                                 |
-| [ActivityLogAlert](https://github.com/equinor/deploy-bundle/tree/main/Modules/ActivityLogAlert/1.0#readme)                       | ARM          | [![ActivityLogAlert 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLogAlert.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ActivityLogAlert.yml)                                  |
-| [AutomationAccount](https://github.com/equinor/deploy-bundle/tree/main/Modules/AutomationAccount/1.0#readme)                     | ARM          | [![AutomationAccount 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-AutomationAccount.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-AutomationAccount.yml)                               |
-| [Budgets](https://github.com/equinor/deploy-bundle/tree/main/Modules/Budgets/1.0#readme)                                         | ARM          | [![Budgets 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-Budgets.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-Budgets.yml)                                                             |
-| [LogAnalytics](https://github.com/equinor/deploy-bundle/tree/main/Modules/LogAnalytics/1.0#readme)                               | ARM          | [![LogAnalytics 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-LogAnalytics.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-LogAnalytics.yml)                                              |
-| [MetricAlert](https://github.com/equinor/deploy-bundle/tree/main/Modules/MetricAlert/1.0#readme)                                 | ARM          | [![MetricAlert 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-MetricAlert.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-MetricAlert.yml)                                                 |
-| [ResourceGroup](https://github.com/equinor/deploy-bundle/tree/main/Modules/ResourceGroup/1.0#readme)                             | ARM          | [![ResourceGroup 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ResourceGroup.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-ResourceGroup.yml)                                           |
-| [SoftwareUpdateConfiguration](https://github.com/equinor/deploy-bundle/tree/main/Modules/SoftwareUpdateConfiguration/1.0#readme) | ARM          | [![SoftwareUpdateConfiguration 1.0](https://github.com/equinor/deploy-bundle/actions/workflows/Module-SoftwareUpdateConfiguration.yml/badge.svg)](https://github.com/equinor/deploy-bundle/actions/workflows/Module-SoftwareUpdateConfiguration.yml) |
 
 ### Test and validation process for modules
 
