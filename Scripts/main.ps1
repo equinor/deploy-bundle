@@ -21,7 +21,7 @@ param(
     [Parameter(Mandatory)]
     [string] $ModuleName,
 
-    [Parameter(Mandatory)]
+    [Parameter()]
     [string] $ModuleVersion,
 
     [Parameter()]
@@ -43,81 +43,80 @@ param(
     $RemainingArguments
 )
 $Task = ($MyInvocation.MyCommand.Name).split('.')[0]
-New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion"
+$ModuleIdentifier = (@($Task, $Action, $ModuleName, $ModuleVersion) | Where-Object {$_}) -join "-"
+
+New-GitHubLogGroup -Title "$ModuleIdentifier"
 
 $Output = $null
 
-if ($ModulesPath | IsNullOrEmpty ) {
-    $ModulePath = "$env:GITHUB_ACTION_PATH/Modules/$ModuleName/$ModuleVersion"
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Using built-in Module Library - $ModulePath"
-} else {
-    $ModulePath = "$env:GITHUB_WORKSPACE/$ModulesPath/$ModuleName/$ModuleVersion"
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Using custom Module Library - $ModulePath"
-}
-Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find module folder - $ModulePath"
+$ModulePath = (@($env:GITHUB_WORKSPACE, $ModulesPath, $ModuleName, $ModuleVersion) | Where-Object {$_}) -join "/"
+
+Write-Output "$ModuleIdentifier - Using custom Module Library - $ModulePath"
+
+Write-Output "$ModuleIdentifier - Find module folder - $ModulePath"
 if (! (Test-Path -Path $ModulePath)) {
-    throw "$Task-$Action-$ModuleName-$ModuleVersion - Find module folder - $ModulePath - Failed"
+    throw "$ModuleIdentifier - Find module folder - $ModulePath - Failed"
 }
-Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find module folder - $ModulePath - Succeeded"
+Write-Output "$ModuleIdentifier - Find module folder - $ModulePath - Succeeded"
 $ModuleFolder = Get-Item -Path $ModulePath
 $DeployFile = Get-Item -Path "$ModuleFolder/deploy.*"
-Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find module folder - $ModulePath - $DeployFile"
+Write-Output "$ModuleIdentifier - Find module folder - $ModulePath - $DeployFile"
 
-Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters"
+Write-Output "$ModuleIdentifier - Find parameters"
 $ParameterFiles = @()
 if ($ParameterFilePath | IsNotNullOrEmpty) {
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Single file"
+    Write-Output "$ModuleIdentifier - Find parameters - Single file"
 
     if (Test-Path -Path "$env:GITHUB_WORKSPACE/$ParameterFilePath") {
         $ParameterFilePath = "$env:GITHUB_WORKSPACE/$ParameterFilePath"
     }
 
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Single file - Find '$ParameterFilePath'"
+    Write-Output "$ModuleIdentifier - Find parameters - Single file - Find '$ParameterFilePath'"
     if (! (Test-Path -Path $ParameterFilePath)) {
-        throw "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Single file - Find '$ParameterFilePath' - Failed"
+        throw "$ModuleIdentifier - Find parameters - Single file - Find '$ParameterFilePath' - Failed"
     }
 
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Single file - Find '$ParameterFilePath' - Succeeded"
+    Write-Output "$ModuleIdentifier - Find parameters - Single file - Find '$ParameterFilePath' - Succeeded"
 
     $ParameterFile = Get-Item -Path $ParameterFilePath
     $ParameterFiles += $ParameterFile
 
 } elseif ($ParameterFolderPath | IsNotNullOrEmpty) {
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Folder of files"
+    Write-Output "$ModuleIdentifier - Find parameters - Folder of files"
 
     if (Test-Path -Path "$env:GITHUB_WORKSPACE/$ParameterFolderPath") {
         $ParameterFolderPath = "$env:GITHUB_WORKSPACE/$ParameterFolderPath"
     }
 
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Folder of files - Find '$ParameterFolderPath'"
+    Write-Output "$ModuleIdentifier - Find parameters - Folder of files - Find '$ParameterFolderPath'"
     if (! (Test-Path -Path $ParameterFolderPath)) {
-        throw "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Folder of files - Find '$ParameterFolderPath' - Failed"
+        throw "$ModuleIdentifier - Find parameters - Folder of files - Find '$ParameterFolderPath' - Failed"
     }
-    Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Folder of files - Find '$ParameterFolderPath' - Succeeded"
+    Write-Output "$ModuleIdentifier - Find parameters - Folder of files - Find '$ParameterFolderPath' - Succeeded"
 
     $ParameterFileObjects = Get-ChildItem -Path $ParameterFolderPath | Get-Item
 
     foreach ($ParameterFile in $ParameterFileObjects) {
-        Write-Output "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - Folder of files - $($ParameterFile.FullName)"
+        Write-Output "$ModuleIdentifier - Find parameters - Folder of files - $($ParameterFile.FullName)"
         $ParameterFiles += $ParameterFile
     }
 
 } else {
-    throw "$Task-$Action-$ModuleName-$ModuleVersion - Find parameters - No parameter file/folder is provided."
+    throw "$ModuleIdentifier - Find parameters - No parameter file/folder is provided."
 }
 
 $DeploymentOutputObjects = @()
 foreach ($ParameterFile in $ParameterFiles) {
-    New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name)"
+    New-GitHubLogGroup -Title "$ModuleIdentifier-$($ParameterFile.name)"
     switch ($DeployFile.Extension) {
         '.ps1' {
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - PowerShell module"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - PowerShell module"
 
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Test parameter file"
             if (! (Test-JSONParameters -ParameterFilePath $ParameterFile.FullName)) {
-                throw "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file - Failed"
+                throw "$ModuleIdentifier-$($ParameterFile.name) - Test parameter file - Failed"
             }
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Test parameter file - Successfull"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Test parameter file - Successfull"
 
             $DeploymentParameters = @{
                 ParameterFilePath = $ParameterFile
@@ -126,13 +125,13 @@ foreach ($ParameterFile in $ParameterFiles) {
                 ErrorAction       = 'Stop'
             }
 
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Deploy using:"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Deploy using:"
             $DeploymentParameters
 
             $DeploymentOutputObject = . $DeployFile @DeploymentParameters
         }
         { $_ -in '.json', '.bicep' } {
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - ARM ($_) module"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - ARM ($_) module"
             switch ($Action) {
                 'WhatIf' {
                     $Operation = 'what-if'
@@ -147,13 +146,13 @@ foreach ($ParameterFile in $ParameterFiles) {
                     $Operation = 'delete'
                 }
                 default {
-                    throw "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Action not supported"
+                    throw "$ModuleIdentifier-$($ParameterFile.name) - Action not supported"
                 }
             }
 
             $Schema = (Get-Content -Raw -Path $ParameterFile | ConvertFrom-Json).'$schema'
             if ($Schema -notmatch '\/deploymentParameters.json#$') {
-                Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Not a valid ARM parameter file"
+                Write-Warning "$ModuleIdentifier-$($ParameterFile.name) - Not a valid ARM parameter file"
                 continue
             }
 
@@ -198,12 +197,12 @@ foreach ($ParameterFile in $ParameterFiles) {
                 }
             }
 
-            $DeploymentName = "$ModuleName-$ModuleVersion-$( -join (Get-Date -Format yyyyMMddTHHMMssffffZ)[0..63])"
+            $DeploymentName = "$ModuleName-$(if($ModuleVersion){"$ModuleVersion-"})$( -join (Get-Date -Format yyyyMMddTHHMMssffffZ)[0..63])"
             $DeploymentNameParameter = "--name $DeploymentName"
 
 
             if ($ParameterOverrides | IsNotNullOrEmpty ) {
-                Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Adding ParameterOverrides:"
+                Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Adding ParameterOverrides:"
                 Write-Output "    >$ParameterOverrides<"
                 $Parameters += " $ParameterOverrides"
             }
@@ -214,24 +213,24 @@ foreach ($ParameterFile in $ParameterFiles) {
                 $cmd = "az deployment $Scope $Operation $Target $DeploymentNameParameter $Template $LocationParam $Parameters --output json | ConvertFrom-Json"
             }
 
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - using:"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - using:"
             $cmd
 
             for ($Retry = 1; $Retry -le $Retries; $Retry++) {
-                New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries"
+                New-GitHubLogGroup -Title "$ModuleIdentifier-$($ParameterFile.name) - Attempt $Retry/$Retries"
                 $errorFromDeployment = $null
                 $Failed = $false
                 try {
                     $DeploymentOutput = Invoke-Expression -Command $cmd -ErrorAction Stop
                 } catch {
-                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure caught"
+                    Write-Warning "$ModuleIdentifier-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure caught"
                     $Failed = $true
                     $errorFromDeployment = $_
                 }
                 $DeploymentExecutionStatus = $LASTEXITCODE
 
                 if ($Failed -or ($DeploymentExecutionStatus -ne 0)) {
-                    Write-Warning "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure."
+                    Write-Warning "$ModuleIdentifier-$($ParameterFile.name) - Attempt $Retry/$Retries - Failure."
                     Write-Warning "    Command execution status: $DeploymentExecutionStatus"
                     Write-Output '    Retreiving deployment information.'
                     $DeploymentResult = Invoke-Expression -Command "az deployment $Scope list $Target --output json" | ConvertFrom-Json | Where-Object name -EQ $DeploymentName
@@ -283,19 +282,19 @@ foreach ($ParameterFile in $ParameterFiles) {
 
         }
         '.yml' {
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Ansible module"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Ansible module"
         }
         '.tf' {
-            Write-Output "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - Terraform module"
+            Write-Output "$ModuleIdentifier-$($ParameterFile.name) - Terraform module"
         }
 
         default {
-            throw "$Task-$Action-$ModuleName-$ModuleVersion-$($ParameterFile.name) - $($DeployFile.Name) is not supported"
+            throw "$ModuleIdentifier-$($ParameterFile.name) - $($DeployFile.Name) is not supported"
         }
     }
 }
 
 Write-Output '::endgroup::'
 
-New-GitHubLogGroup -Title "$Task-$Action-$ModuleName-$ModuleVersion-Output"
+New-GitHubLogGroup -Title "$ModuleIdentifier-Output"
 return $DeploymentOutputObjects
