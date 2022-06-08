@@ -1,7 +1,5 @@
 # Deploy bundles - Deploy resources to Azure
 
-> Do not use. Currently under development.
-
 > copied from https://github.com/equinor/AzModules
 
 
