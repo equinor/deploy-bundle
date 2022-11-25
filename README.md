@@ -8,6 +8,7 @@
 This action automates the validation, deployment and removal of resources in Azure using [idempotent](https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning)
 [Infrastructure as Code (IaC)](https://en.wikipedia.org/wiki/Infrastructure_as_code) modules.
 You can use the built-in module library that comes with this action or create and use your own module repository.
+- NOTE: Solum does not maintain/support the solution
 
 Supported IaC languages:
 
